@@ -259,6 +259,9 @@ type NodeConfig struct {
 	// Providers need this if they need to do their own custom resolving
 	SkipDownwardAPIResolution bool
 
+	// TODO comment
+	NodeLeaseDuration time.Duration
+
 	routeAttacher func(Provider, NodeConfig, corev1listers.PodLister)
 }
 
@@ -373,8 +376,12 @@ func NewNode(name string, newProvider NewProviderFunc, opts ...NodeOpt) (*Node, 
 		}
 	}
 
+	nodeLeaseDuration := int32(node.DefaultLeaseDuration)
+	if cfg.NodeLeaseDuration != 0 {
+		nodeLeaseDuration = int32(cfg.NodeLeaseDuration.Seconds())
+	}
 	nodeControllerOpts := []node.NodeControllerOpt{
-		node.WithNodeEnableLeaseV1(NodeLeaseV1Client(cfg.Client), node.DefaultLeaseDuration),
+		node.WithNodeEnableLeaseV1(NodeLeaseV1Client(cfg.Client), nodeLeaseDuration),
 	}
 
 	if cfg.NodeStatusUpdateErrorHandler != nil {
