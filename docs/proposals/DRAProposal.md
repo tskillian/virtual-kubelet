@@ -427,6 +427,7 @@ func (p *MyProvider) UnprepareResources(ctx context.Context, pod *corev1.Pod, cl
 **Unit Tests:**
 - `ResourceSliceProvider` detection and `ResourceSlice` lifecycle management (create, update, delete)
 - `ResourceClaimHandler` integration in `createOrUpdatePod` and `deletePod`
+- The result of `PrepareResources` are reflected in the pod that gets passed to providers in `CreatePod` (including containres sharing devices)
 - Verify providers not implementing DRA interfaces see no behavior change
 
 **Integration Tests:**
