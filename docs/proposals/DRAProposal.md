@@ -349,14 +349,6 @@ The virtual-kubelet ClusterRole needs additional permissions for DRA objects. Ad
 - apiGroups:
   - resource.k8s.io
   resources:
-  - resourceclaims/status
-  verbs:
-  - get
-  - update
-  - patch
-- apiGroups:
-  - resource.k8s.io
-  resources:
   - deviceclasses
   verbs:
   - get
@@ -432,10 +424,14 @@ func (p *MyProvider) UnprepareResources(ctx context.Context, pod *corev1.Pod, cl
 
 ### Test Plan
 
-- Add unit tests for `ResourceSliceProvider` detection and `ResourceSlice` lifecycle management
-- Add unit tests for `ResourceClaimHandler` integration in `createOrUpdatePod` and `deletePod`
-- Add unit tests verifying that providers not implementing DRA interfaces see no behavior change
-- Extend the mock provider with an optional DRA-enabled variant for integration testing
+**Unit Tests:**
+- `ResourceSliceProvider` detection and `ResourceSlice` lifecycle management (create, update, delete)
+- `ResourceClaimHandler` integration in `createOrUpdatePod` and `deletePod`
+- Verify providers not implementing DRA interfaces see no behavior change
+
+**Integration Tests:**
+- Extend the mock provider with an optional DRA-enabled variant
+- Lifecycle tests to prove reconciliation works at each part of resource setup
 - End-to-end test: deploy a pod with a `ResourceClaim` to a virtual node backed by a DRA-enabled
   mock provider, verify the claim is prepared and the pod is created successfully
 
